@@ -1,0 +1,15 @@
+.base{
+    grid-area: nav;
+    padding: 10px;
+}
+
+.link{
+    margin-right: 20px;
+    font-family: 'Nerko One', cursive;
+}
+.link a{
+    text-decoration: none;
+}
+.link a:visited{
+    color: black;
+}

@@ -1,0 +1,33 @@
+
+.header{
+    grid-area: header;
+    background-color: #eef6f6;
+}
+
+
+.panel {
+    align-items: center;
+    z-index: 1;
+    display: flex;
+    color: black;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 0;
+    width: 100%;
+    padding: 10px;
+    top: 0;
+    list-style: none;
+}
+.li{
+    margin-right: 20px;
+    font-family: 'Nerko One', cursive;
+}
+.li a{
+    text-decoration: none;
+}
+.li a:visited{
+    color: black;
+}
+.nav{
+    text-decoration: bisque;
+}

@@ -1,0 +1,14 @@
+
+.app-wrapper{
+  grid-template-areas:
+  "header header header"
+  "nav Screen Screen"
+  "footer footer footer";
+  display: grid;
+  grid-template-rows: 2fr 10fr 1fr;
+  grid-template-columns: 2fr 10fr 2fr;
+}
+
+
+
+/*почему надо давать полный путь хотя app.css находиться в src*/
