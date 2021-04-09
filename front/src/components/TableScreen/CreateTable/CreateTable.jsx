@@ -5,7 +5,9 @@ import Slider from '@material-ui/core/Slider';
 import Button from "@material-ui/core/Button";
 import classes from "./CreateTable.module.css";
 import {Checkbox, TextField} from "@material-ui/core";
-import {addNewLobby,updateTablesPage} from "../../../redux/tablesReducer"
+import {addNewLobby, updateTablesPage} from "../../../redux/tablesReducer"
+import {connect} from "react-redux";
+
 
 export function CreateTable(props) {
 
@@ -15,33 +17,32 @@ export function CreateTable(props) {
 
     let buff = {
         id: props.tablesPage.tables.newLobby.id,
+        name: props.tablesPage.tables.newLobby.name,
         type: props.tablesPage.tables.newLobby.type,
         description: props.tablesPage.tables.newLobby.description,
         maxPlayers: props.tablesPage.tables.newLobby.maxPlayers
     };
 
-    let elementID = React.createRef();
+    let elementName = React.createRef();
     let elementType = React.createRef();
     let elementDesc = React.createRef();
     let elementPlayers = React.createRef();
 
-    let onchangeId = () => {
-        buff.id = elementID.current.value;
+    let onchangeName = () => {
+        buff.name = elementName.current.value;
         let action = updateTablesPage(buff);
         props.dispatch(action);
-
     }
-    let onchangeType = () => {
-        buff.type = elementType.current.value;
-        props.update();
-    }
-    let onchangeDesc = () => {
-        buff.description = elementDesc.current.value;
-        props.update(buff);
-    }
+    // let onchangeType = () => {
+    //     buff.type = elementType.current.value;
+    //     props.update();
+    // }
+    // let onchangeDesc = () => {
+    //     buff.description = elementDesc.current.value;
+    //     props.update(buff);
+    // }
 
     let onchangeMaxPlayers = () => {
-       // buff.maxPlayers = elementPlayers.current.value;
         buff.maxPlayers = parseInt(document.getElementById("slider").innerText);
         let action = updateTablesPage(buff);
         props.dispatch(action);
@@ -56,7 +57,7 @@ export function CreateTable(props) {
                 <Typography id="discrete-slider-small-steps" gutterBottom>
                     Name
                 </Typography>
-                <textarea onChange={onchangeId} id="outlined-basic" variant="outlined" ref={elementID}/>
+                <textarea onChange={onchangeName} id="outlined-basic" ref={elementName}/>
             </div>
             <div>
                 <Typography id="discrete-slider-small-steps" gutterBottom>

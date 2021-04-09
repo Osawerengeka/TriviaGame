@@ -4,10 +4,7 @@ import classes from "./Footer.module.css";
 
 function Footer() {
     return(
-        <div className={classes.footer}>f</div>
-
-
-
+        <div align="right" className={classes.footer}>Directed by GevWebCORP</div>
     );
 }
 

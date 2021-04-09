@@ -1,12 +1,12 @@
 
 .app-wrapper{
   grid-template-areas:
-  "header header header"
-  "nav Screen Screen"
-  "footer footer footer";
+  "nav header"
+  "nav Screen"
+  "nav footer";
   display: grid;
   grid-template-rows: 2fr 10fr 1fr;
-  grid-template-columns: 2fr 10fr 2fr;
+  grid-template-columns: 2fr 10fr;
 }
 
 

@@ -3,7 +3,7 @@ import React from "react";
 import {Header} from "./components/Header/Header.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import Nav from "./components/Nav/Nav.jsx";
-import {Tables,TableGame} from "./components/TableScreen/Tables/Tables.jsx";
+import {Tables, TableGame} from "./components/TableScreen/Tables/Tables.jsx";
 import GameScreen from "./components/GameScreen/GameScreen.jsx";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import {CreateTable} from "./components/TableScreen/CreateTable/CreateTable";
@@ -23,9 +23,10 @@ export function App(props) {
                     />
                     <Route path="/gamescreen" render={() => {return <GameScreen />}}/>
                 </Switch>
-                <Nav/>
+                <Nav name = "Gevorkian George"/>
                 <Footer/>
             </div>
         </BrowserRouter>
     );
 }
+

@@ -1,5 +1,6 @@
 
 .footer{
     grid-area: footer;
+    padding-right: 10px;
     background-color: #eef6f6;
 }

@@ -4,7 +4,6 @@ import './index.css';
 import {App} from './App';
 import reportWebVitals from './reportWebVitals';
 import {store} from "./redux/redux-store";
-
 window.store = store;
 
 export function rerenderEntireTree(state) {
@@ -15,6 +14,7 @@ export function rerenderEntireTree(state) {
         document.getElementById('root')
     );
 }
+
 
 rerenderEntireTree(store.getState());
 
