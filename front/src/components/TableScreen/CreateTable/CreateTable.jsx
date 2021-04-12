@@ -33,26 +33,19 @@ export function CreateTable(props) {
         let action = updateTablesPage(buff);
         props.dispatch(action);
     }
-    // let onchangeType = () => {
-    //     buff.type = elementType.current.value;
-    //     props.update();
-    // }
-    // let onchangeDesc = () => {
-    //     buff.description = elementDesc.current.value;
-    //     props.update(buff);
-    // }
 
     let onchangeMaxPlayers = () => {
         buff.maxPlayers = parseInt(document.getElementById("slider").innerText);
         let action = updateTablesPage(buff);
         props.dispatch(action);
     }
+
     let addNewTable = () => {
         let action = addNewLobby();
         props.dispatch(action);
     }
     return (
-        <div>
+        <div className={classes.tableScreen}>
             <div className={classes.textField}>
                 <Typography id="discrete-slider-small-steps" gutterBottom>
                     Name
@@ -62,7 +55,9 @@ export function CreateTable(props) {
             <div>
                 <Typography id="discrete-slider-small-steps" gutterBottom>
                     Amount of Players
-                    <Slider
+                </Typography>
+                <div  className={classes.slider}>
+                 <Slider
                         id="slider"
                         defaultValue={4}
                         onChange={onchangeMaxPlayers}
@@ -73,9 +68,7 @@ export function CreateTable(props) {
                         min={1}
                         max={8}
                         valueLabelDisplay="auto"
-                    />
-                </Typography>
-
+                    /></div>
             </div>
             <div>
                 <Typography>
@@ -91,8 +84,8 @@ export function CreateTable(props) {
                     <label>Forever mode</label>
                 </Typography>
             </div>
-            <div>
-                <Button onClick={addNewTable} variant="contained" color="primary">
+            <div  onClick={addNewTable}>
+                <Button variant="contained" color="primary">
                     Create lobby
                 </Button>
             </div>

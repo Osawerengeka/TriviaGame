@@ -22,14 +22,6 @@
 
 }
 
-.tableBody:hover {
-    color: #edb749;
-}
-
-.tableHeader span{
-  margin: 0 20% 0 0;
-}
-
-.tableBody span{
-    margin: 0 20% 0 0;
+tbody tr:hover{
+    background-color: #fff3e4;
 }

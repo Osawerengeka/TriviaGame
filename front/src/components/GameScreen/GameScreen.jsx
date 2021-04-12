@@ -7,7 +7,7 @@ import classes from "./GameScreen.module.css";
 function GameScreen(props) {
     return(
         <div className={classes.gameScreen}>
-            g
+            game will be here
         </div>
     );
 }

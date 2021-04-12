@@ -3,6 +3,7 @@
     grid-area: header;
     background-color: #dbfafa;
     margin-right: 10px;
+    justify-content: left;
 }
 
 
