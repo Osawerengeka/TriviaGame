@@ -1,0 +1,25 @@
+.gameCard{
+    grid-area: gameCard;
+}
+
+.gameCardGrid{
+    grid-template-areas:
+    "topic topic img"
+    "txt txt img"
+    "answer answer answer";
+    display: grid;
+    grid-template-columns: 3fr 3fr 3fr;
+    grid-template-rows: 3fr 3fr 3fr;
+}
+.topic{
+    grid-area: topic;
+}
+.image{
+    grid-area: img;
+}
+.text{
+    grid-area: txt;
+}
+.answer{
+    grid-area: answer;
+}

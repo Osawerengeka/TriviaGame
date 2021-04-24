@@ -5,28 +5,28 @@ import Footer from "./components/Footer/Footer.jsx";
 import Nav from "./components/Nav/Nav.jsx";
 import {Tables, TableGame} from "./components/TableScreen/Tables/Tables.jsx";
 import GameScreen from "./components/GameScreen/GameScreen.jsx";
-import {BrowserRouter, Route, Switch} from "react-router-dom";
+import {Router, Route, Switch} from "react-router-dom";
 import {CreateTable} from "./components/TableScreen/CreateTable/CreateTable";
-
+import history from "./history"
 
 export function App(props) {
     return (
-        <BrowserRouter>
+        <Router history={history}>
             <div className="app-wrapper">
                 <Header name="Gevorkian George"/>
                 <Switch>
-                    <Route exact path="/tablescreen" render={ () => {return <Tables tablesPage = {props.state.tablesPage}/>}}/>
+                    <Route exact path="/tablescreen" render={ () => {return <Tables tablesPage = {props.state.tablesPage} dispatch = {props.dispatch} />}}/>
                     <Route path="/tablescreen/create" render={
                         () => {return <CreateTable
                             tablesPage = {props.state.tablesPage}
                             dispatch = {props.dispatch} />}}
                     />
-                    <Route path="/gamescreen" render={() => {return <GameScreen />}}/>
+                    <Route path="/gamescreen" render={() => {return <GameScreen gamePage = {props.state.gamePage} dispatch = {props.dispatch}/>}}/>
                 </Switch>
                 <Nav name = "Gevorkian George"/>
                 <Footer/>
             </div>
-        </BrowserRouter>
+        </Router>
     );
 }
 

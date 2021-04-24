@@ -1,7 +1,9 @@
 const ADD_TABLE = 'ADD-NEW-TABLE';
 const UPDATE_TABLES = 'UPDATE-TABLES';
 
+
 export const addNewLobby = () => ({type: 'ADD-NEW-TABLE'});
+
 export const updateTablesPage = (newLobby) => (
     {
         type: 'UPDATE-TABLES',
