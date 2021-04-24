@@ -29,29 +29,53 @@ let a = (users) => {
 
 }
 
+function  connect(){
+    const URL = "ws://localhost:8081";
+    const socket = new WebSocket(URL);
+    socket.onopen = function() {
+        alert("Соединение установлено co cnjhjys ");
+    };
+
+    socket.onclose = function(event) {
+        if (event.wasClean) {
+            alert('Соединение закрыто чисто');
+        } else {
+            alert('Обрыв соединения'); // например, "убит" процесс сервера
+        }
+        alert('Код: ' + event.code + ' причина: ' + event.reason);
+    };
+    socket.onmessage = function(event) {
+        alert("Получены данные " + event.data);
+    };
+
+    socket.onerror = function(error) {
+        alert("Ошибка " + error.message);
+    };
+}
 export function UsersRanking(props) {
     const defclasses = useStyles();
-    // const URL = "";
-    // const socket = new WebSocket(URL);
-    // socket.onopen = function() {
-    //     alert("Соединение установлено.");
-    // };
-    //
-    // socket.onclose = function(event) {
-    //     if (event.wasClean) {
-    //         alert('Соединение закрыто чисто');
-    //     } else {
-    //         alert('Обрыв соединения'); // например, "убит" процесс сервера
-    //     }
-    //     alert('Код: ' + event.code + ' причина: ' + event.reason);
-    // };
-    // socket.onmessage = function(event) {
-    //     alert("Получены данные " + event.data);
-    // };
-    //
-    // socket.onerror = function(error) {
-    //     alert("Ошибка " + error.message);
-    // };
+
+    const URL = "ws://localhost:8081";
+    const socket = new WebSocket(URL);
+    socket.onopen = function() {
+        alert("Соединение установлено.");
+    };
+
+    socket.onclose = function(event) {
+        if (event.wasClean) {
+            alert('Соединение закрыто чисто');
+        } else {
+            alert('Обрыв соединения'); // например, "убит" процесс сервера
+        }
+        alert('Код: ' + event.code + ' причина: ' + event.reason);
+    };
+    socket.onmessage = function(event) {
+        alert("Получены данные " + event.data);
+    };
+
+    socket.onerror = function(error) {
+        alert("Ошибка " + error.message);
+    };
 
     return (<div>
         <List className={defclasses.root + classes.usersRanking}>

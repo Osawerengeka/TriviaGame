@@ -2,16 +2,14 @@ import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import classes from './GameCard.module.css';
+import {CardActions, CardContent, CardMedia} from "@material-ui/core";
 
 const useStyles = makeStyles({
     root: {
-        maxWidth: 345,
+        maxWidth: 100,
         border: 1,
         margin: 10,
     },
@@ -23,32 +21,32 @@ function GetCardAnswers(ansVariants){
             {el}
         </Button>
     )
-    return(<div>{a}</div>);
+    return(<CardActions>{a}</CardActions>);
+}
+
+function showImage(image){
+    let a = <CardMedia
+        component="img"
+        alt="Contemplative Reptile"
+        height="140"
+        image={image}
+        title="image"/>
+return image != null ? a : null;
 }
 
 export default function GameCard(props) {
-    const defclasses = useStyles();
+    const defClasses = useStyles();
     return (
-        <Card className={defclasses.root + classes.gameCard}>
-            <div className={classes.gameCardGrid}>
-            <CardActionArea>
-                {/*<CardMedia*/}
-                {/*    className={classes.image}*/}
-                {/*    component="img"*/}
-                {/*    alt="Contemplative Reptile"*/}
-                {/*    height="140"*/}
-                {/*    image={props.image != null ? props.image : null}*/}
-                {/*    title="Contemplative Reptile"*/}
-                {/*/>*/}
+        <Card className={defClasses.root + classes.gameCard}>
+            <CardContent>
                     <Typography className={classes.topic} variant="h5" component="h2">
                         {props.question[0].topic}
                     </Typography>
                     <Typography className={classes.text} variant="body2" color="textSecondary" component="p">
                         {props.question[0].question}
                     </Typography>
-            </CardActionArea>
-                <GetCardAnswers className={classes.answer} ansVariants ={props.question[0].ansVariants}/>
-            </div>
+                <GetCardAnswers className = {classes.answer} ansVariants = {props.question[0].ansVariants}/>
+            </CardContent>
         </Card>
     );
 }
