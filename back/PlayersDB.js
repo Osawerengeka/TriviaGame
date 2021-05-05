@@ -1,17 +1,17 @@
-const MongoClient = require("mongodb").MongoClient;   
-const dburl = "mongodb://localhost:27017/";
-const databaseName = 'WEB';
-const playersCollectionName = 'players';
-const mongoClient = new MongoClient(dburl, { useUnifiedTopology: true });
+const MongoClient = require("mongodb").MongoClient;
 
 class PlayerDBClient {
+	dburl = "mongodb://localhost:27017/";
+	databaseName = 'WEB';
+	playersCollectionName = 'players';
+	mongoClient = new MongoClient(this.dburl, { useUnifiedTopology: true });
 	static addPlayer(player) {
 		mongoClient.connect(function(err, client){      
 			if(err){
 				return console.log(err)
 			}
-    			const db = client.db(databaseName);
-    			const collection = db.collection(playersCollectionName);
+    			const db = client.db(this.databaseName);
+    			const collection = db.collection(this.playersCollectionName);
 			if(collection.findOne(player) != null) {
 				client.close()
 				return false;
@@ -20,11 +20,11 @@ class PlayerDBClient {
         			if(err){ 
             			return console.log(err);
         			}
-        			console.log(result.ops);
         			client.close();
+				return "true"
     			});
 		});
-	});
+	};
 	
 	findPlayer(player) {
 		mongoClient.connect(function(err, client){      
@@ -43,6 +43,6 @@ class PlayerDBClient {
 		});
 		return findedPlayer;
 	}
-});
+};
 
 module.exports = PlayerDBClient;
