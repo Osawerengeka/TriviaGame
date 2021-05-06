@@ -8,6 +8,7 @@
 
 
 .panel {
+    max-height: 10px;
     align-items: center;
     z-index: 1;
     display: flex;
@@ -17,7 +18,6 @@
     margin: 0 0;
     width: 100%;
     padding: 10px;
-
     list-style: none;
 }
 .li{

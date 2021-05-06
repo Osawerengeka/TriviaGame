@@ -1,3 +1,6 @@
+import {isLobbyNotEnable} from "../components/Header/Header";
+
+
 const ADD_GAME = 'ADD-NEW-GAME';
 
 export const addGame = (lobby) => ({
@@ -11,7 +14,8 @@ let initialState = {
             ]
         },
         settings: {id: null, name: null, type: null, description: null, maxPlayers: null}
-    }
+    },
+    isLobbyNotEnable : true
 };
 
 
@@ -24,6 +28,7 @@ export const gameReducer = (state = initialState, action) => {
             state.game.settings.type = action.lobby.type;
             state.game.settings.description = action.lobby.description;
             state.game.settings.maxPlayers = action.lobby.maxPlayers;
+            state.isLobbyNotEnable = false;
             return state;
     }
     return state;

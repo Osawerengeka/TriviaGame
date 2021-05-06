@@ -1,47 +1,48 @@
-const MongoClient = require("mongodb").MongoClient;
-
 class PlayerDBClient {
-	dburl = "mongodb://localhost:27017/";
-	databaseName = 'WEB';
-	playersCollectionName = 'players';
-	mongoClient = new MongoClient(this.dburl, { useUnifiedTopology: true });
-	static addPlayer(player) {
-		mongoClient.connect(function(err, client){      
+	addPlayer(player, mongoClient) {
+		mongoClient.connect(function(err, client){
 			if(err){
 				return console.log(err)
 			}
-    			const db = client.db(this.databaseName);
-    			const collection = db.collection(this.playersCollectionName);
+			console.log("1");
+			const db = client.db('WEB');
+			const collection = db.collection('players');
+
 			if(collection.findOne(player) != null) {
+				console.log("1");
 				client.close()
 				return false;
 			}
-    			collection.insertOne(player, function(err, result){
-        			if(err){ 
-            			return console.log(err);
-        			}
-        			client.close();
+			console.log("11");
+			collection.insertOne(player, function(err, result){
+				if(err){
+					console.log("111");
+					return console.log(err);
+				}
+				client.close();
 				return "true"
-    			});
+			});
 		});
 	};
-	
-	findPlayer(player) {
-		mongoClient.connect(function(err, client){      
+	findPlayer(player, mongoClient) {
+		mongoClient.connect(function(err, client){
 			if(err){
 				return console.log(err)
 			}
-    			const db = client.db(databaseName);
-    			const collection = db.collection(playersCollectionName);
-    			const findedPlayer = collection.findOne(player, function(err, result){
-        			if(err){ 
-            			return console.log(err);
-        			}
-        			console.log(result.ops);
-        			client.close();
-    			});
+			const db = client.db('WEB');
+			const collection = db.collection('players');
+			const findedPlayer = collection.findOne(player, function(err, result){
+					if(err){
+
+					return console.log(err);
+				}
+				console.log(result.ops);
+				client.close();
+
+			});
+			return findedPlayer;
 		});
-		return findedPlayer;
+
 	}
 };
 

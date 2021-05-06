@@ -12,10 +12,11 @@ import BuildIcon from '@material-ui/icons/Build';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GroupIcon from '@material-ui/icons/Group';
-import {IconButton} from "@material-ui/core";
+import {IconButton, Tab} from "@material-ui/core";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import cls from './Nav.module.css';
+import {Link} from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -60,8 +61,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-;
-
 function Nav(props) {
     const userName = props.name;
     const {window} = props;
@@ -89,11 +88,11 @@ function Nav(props) {
             </List>
             <Divider/>
             <List>
-                <ListItem button key={"Profile"}>
+                <ListItem button key={"Profile"} component={Link} to="/Profile/" >
                     <ListItemIcon> <AccountCircleIcon/> </ListItemIcon>
                     <ListItemText primary={"Profile"}/>
                 </ListItem>
-                <ListItem button key={"Notifications"}>
+                <ListItem button key={"Notifications"} component={Link} to="/Notification/" >
                     <ListItemIcon> <BuildIcon/> </ListItemIcon>
                     <ListItemText primary={"Notifications"}/>
                 </ListItem>

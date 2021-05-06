@@ -2,13 +2,12 @@ import React from "react";
 import classes from "./Tables.module.css";
 import {move} from "../MoveToGame";
 import {Table, TableBody, TableCell, TableHead, TableRow} from "@material-ui/core";
-import Link from "react-router-dom";
 import {addGame} from "../../../redux/gameReducer";
 
 let addNewGame = (props, lobby) => {
     let action = addGame(lobby);
-    console.log(props);
     props.dispatch.dispatch(action);
+
 }
 
 export function TableGame(props) {
@@ -22,7 +21,7 @@ export function TableGame(props) {
     return (
         <TableRow key={props.name} className={classes.tableBody} onClick={() => {
             addNewGame(props, lobby);
-            move("/gamescreen");
+            move("/feed/gamescreen");
         }}>
             <TableCell component="th" scope="row">{props.name}</TableCell>
             <TableCell align="right">{props.type}</TableCell>
@@ -33,11 +32,11 @@ export function TableGame(props) {
 }
 
 export function Tables(props) {
+    let len = props.tablesPage.tables.listOfTables.length;
     let tables = props.tablesPage.tables.listOfTables.map(el => <TableGame dispatch={props} name={el.name}
                                                                            type={el.type}
                                                                            description={el.description}
                                                                            maxPlayers={el.maxPlayers}/>)
-
     return (
         <Table className={classes.tableScreen}>
             <TableHead className={classes.tableHeader}>

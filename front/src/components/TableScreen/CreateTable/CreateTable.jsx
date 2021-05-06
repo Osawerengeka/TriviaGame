@@ -8,6 +8,12 @@ import {Checkbox, TextField} from "@material-ui/core";
 import {addNewLobby, updateTablesPage} from "../../../redux/tablesReducer"
 import {connect} from "react-redux";
 import {move} from '../MoveToGame';
+import {addGame} from "../../../redux/gameReducer";
+
+let addNewGame = (props, lobby) => {
+    let action = addGame(lobby);
+    props.dispatch(action);
+}
 
 export function CreateTable(props) {
 
@@ -84,7 +90,7 @@ export function CreateTable(props) {
                     <label>Forever mode</label>
                 </Typography>
             </div>
-            <div  onClick={ () => {addNewTable(); move("/gamescreen");}}>
+            <div onClick={ () => {addNewTable(); addNewGame(props, buff); move("/feed/gamescreen");}}>
                 <Button variant="contained" color="primary">
                     Create lobby
                 </Button>

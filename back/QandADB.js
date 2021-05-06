@@ -6,13 +6,13 @@ class QandADBClient {
 	playersCollectionName = 'QandA';
 	mongoClient = new MongoClient(this.dburl, { useUnifiedTopology: true });
 	static getQandA() {
-		mongoClient.connect(function(err, client){      
+		mongoClient.connect(function(err, client){
 			if(err){
 				return console.log(err)
 			}
-    			const db = client.db(this.databaseName);
-    			const collection = db.collection(this.playersCollectionName);
-			if(collection.findOne(QA) != null) {
+			const db = client.db(this.databaseName);
+			const collection = db.collection(this.playersCollectionName);
+			if(collection.findOne(QA) == null) {
 				client.close()
 				return false;
 			}

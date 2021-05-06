@@ -1,6 +1,6 @@
 import React from "react";
- import classes from "./UsersRanking.module.css";
-import { makeStyles } from '@material-ui/core/styles';
+import classes from "./UsersRanking.module.css";
+import {makeStyles} from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -16,27 +16,31 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-let a = (users) => {
-    return users.map(a =>
-    <ListItem>
-        <ListItemAvatar>
-            <Avatar>
-                <ImageIcon />
-            </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary={a.name} secondary={a.points} />
-    </ListItem>)
+let ListofPlayers = (players) => {
+    const defclasses = useStyles();
 
+    return (
+        <List className={defclasses.root + classes.usersRanking}>
+            {players.map(el =>
+            <ListItem>
+                <ListItemAvatar>
+                    <Avatar>
+                        <ImageIcon/>
+                    </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={el.name} secondary={el.points}/>
+            </ListItem>)}
+        </List>)
 }
 
-function  connect(){
+function connect() {
     const URL = "ws://localhost:8081";
     const socket = new WebSocket(URL);
-    socket.onopen = function() {
+    socket.onopen = function () {
         alert("Соединение установлено co cnjhjys ");
     };
 
-    socket.onclose = function(event) {
+    socket.onclose = function (event) {
         if (event.wasClean) {
             alert('Соединение закрыто чисто');
         } else {
@@ -44,65 +48,18 @@ function  connect(){
         }
         alert('Код: ' + event.code + ' причина: ' + event.reason);
     };
-    socket.onmessage = function(event) {
+    socket.onmessage = function (event) {
         alert("Получены данные " + event.data);
     };
 
-    socket.onerror = function(error) {
+    socket.onerror = function (error) {
         alert("Ошибка " + error.message);
     };
 }
+
 export function UsersRanking(props) {
-    const defclasses = useStyles();
 
-    const URL = "ws://localhost:8081";
-    const socket = new WebSocket(URL);
-    socket.onopen = function() {
-        alert("Соединение установлено.");
-    };
 
-    socket.onclose = function(event) {
-        if (event.wasClean) {
-            alert('Соединение закрыто чисто');
-        } else {
-            alert('Обрыв соединения'); // например, "убит" процесс сервера
-        }
-        alert('Код: ' + event.code + ' причина: ' + event.reason);
-    };
-    socket.onmessage = function(event) {
-        alert("Получены данные " + event.data);
-    };
-
-    socket.onerror = function(error) {
-        alert("Ошибка " + error.message);
-    };
-
-    return (<div>
-        <List className={defclasses.root + classes.usersRanking}>
-            <ListItem>
-                <ListItemAvatar>
-                    <Avatar>
-                        <ImageIcon />
-                    </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary="Photos" secondary="Jan 9, 2014" />
-            </ListItem>
-            <ListItem>
-                <ListItemAvatar>
-                    <Avatar>
-                        <ImageIcon />
-                    </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary="Work" secondary="Jan 7, 2014" />
-            </ListItem>
-            <ListItem>
-                <ListItemAvatar>
-                    <Avatar>
-                        <ImageIcon />
-                    </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary="Vacation" secondary="July 20, 2014" />
-            </ListItem>
-        </List>
-    </div>);
+    // return <ListofPlayers/>;
+    return null;
 }

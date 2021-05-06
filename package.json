@@ -1,6 +1,12 @@
 {
   "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.6",
     "node-static": "^0.7.11",
     "ws": "^7.4.5"
+  },
+  "devDependencies": {
+    "cors": "^2.8.5"
   }
 }
