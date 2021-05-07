@@ -4,23 +4,27 @@ class PlayerDBClient {
 			if(err){
 				return console.log(err)
 			}
-			console.log("1");
 			const db = client.db('WEB');
 			const collection = db.collection('players');
-
-			if(collection.findOne(player) != null) {
-				console.log("1");
-				client.close()
-				return false;
-			}
-			console.log("11");
-			collection.insertOne(player, function(err, result){
-				if(err){
-					console.log("111");
-					return console.log(err);
+			//ВНИМАТЕЛЬНО!!!! В СЛЕДУЮЩЕЙ СТРОЧКЕ ВМЕСТО name ДОЛЖНО БЫТЬ ПОЛЕ КОТОРЫМ ТЫ НАЗЫВАЕШЬ ЛОГИН!!!!!!!!!!!!!!
+			collection.findOne({name: player.name}, (err, item) => {
+				if (err) {
+					console.log({'error':'An error has occurred'});
+				} else {
+					if(item != null) {
+						client.close();
+						return false;
+					}
+					else{
+						collection.insertOne(player, function(err, result){
+							if(err){
+								return console.log(err);
+							}
+							client.close();
+							return true;
+						});
+					}
 				}
-				client.close();
-				return "true"
 			});
 		});
 	};
@@ -31,16 +35,11 @@ class PlayerDBClient {
 			}
 			const db = client.db('WEB');
 			const collection = db.collection('players');
-			const findedPlayer = collection.findOne(player, function(err, result){
-					if(err){
-
-					return console.log(err);
-				}
-				console.log(result.ops);
+			collection.find(player,(err, item) =>{
 				client.close();
-
+				if (item == null) return false;
+				return true;
 			});
-			return findedPlayer;
 		});
 
 	}
