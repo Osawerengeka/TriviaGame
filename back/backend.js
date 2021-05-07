@@ -52,14 +52,8 @@ app.get("/path1", urlencodedParser, function (request, response) {
 
 app.post("/path1", urlencodedParser, function (request, response) {
     if(!request.body) return response.sendStatus(400);
-    console.log(request.body);
-    response.set();
     let result = players.addPlayer(request.body, mongoClient);
-    console.log(result);
-    if (result != "true") response.send(result)
-    else {
-        response.send(JSON.stringify("true"));
-    }
+    response.send(result);
 });
 
 app.get("/path2", urlencodedParser, function (request, response) {
