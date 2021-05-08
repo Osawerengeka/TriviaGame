@@ -8,14 +8,17 @@ import GameScreen from "./components/GameScreen/GameScreen.jsx";
 import {Router, Route, Switch} from "react-router-dom";
 import {CreateTable} from "./components/TableScreen/CreateTable/CreateTable";
 import history from "./history"
-import {LogIn} from "./LogIn";
+import {LogIn} from "./components/Auth/Login/LogIn";
+import {Register} from "./components/Auth/Register/Register";
 
 export function App(props) {
     return (
         <Router history={history}>
             <Switch>
-                <Route exact path="/" render={() => {
-                    return <LogIn dispatch={props.dispatch}/>}}/>
+                <Route exact path="/login" render={() => {
+                    return <LogIn dispatch={props.dispatch}/> }}/>
+                <Route exact path="/register" render={() => {
+                    return <Register dispatch={props.dispatch}/> }}/>
                 <Route path="/feed"><div className="app-wrapper">
                     <Header isLobbyNotEnabled={props.state.gamePage.isLobbyNotEnable}/>
                     <Switch>
