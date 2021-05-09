@@ -2,7 +2,7 @@ import React, {useRef} from "react";
 import classes from "./Register.module.css"
 import axios from 'axios';
 import {initUser} from "../../../redux/userReducer";
-import {move} from "../../TableScreen/MoveToGame";
+import {move} from "../../../MoveToGame";
 import Button from "@material-ui/core/Button";
 
 export function Register(props) {
@@ -11,12 +11,12 @@ export function Register(props) {
     let password2 = React.createRef();
 
     let Register = () => {
-        const URLUsers = "http://localhost:3000/register";
+        const URLUsers = "http://localhost:3001/register";
         let user = {
             name: userName.current.value,
             password: password.current.value,
         }
-        if (password === password2) {
+        if (password2.current.value === password.current.value) {
             axios.post(URLUsers, user)
                 .then(response => {
                     console.log(response);
@@ -51,7 +51,7 @@ export function Register(props) {
                     <input type="password" placeholder="repeat Password" required="" ref={password2}/>
                 </div>
                 <div>
-                    <Button className={classes.sub} onClick={() => {
+                    <Button className={classes.sub} onClick={ () => {
                         Register();
                     }}>Register
                     </Button>

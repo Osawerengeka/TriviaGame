@@ -58,29 +58,6 @@ function connect() {
 }
 
 export function UsersRanking(props) {
-
-    const URL = "ws://localhost:8081";
-    const socket = new WebSocket(URL);
-    socket.onopen = function () {
-        alert("Соединение установлено co cnjhjys ");
-    };
-
-    socket.onclose = function (event) {
-        if (event.wasClean) {
-            alert('Соединение закрыто чисто');
-        } else {
-            alert('Обрыв соединения'); // например, "убит" процесс сервера
-        }
-        alert('Код: ' + event.code + ' причина: ' + event.reason);
-    };
-    socket.onmessage = function (event) {
-        alert("Получены данные " + event.data);
-    };
-
-    socket.onerror = function (error) {
-        alert("Ошибка " + error.message);
-    };
-
      // return <ListofPlayers/>;
     return null;
 }

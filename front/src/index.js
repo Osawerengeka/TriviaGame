@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import {store} from "./redux/redux-store";
 import axios from "axios";
 import {initUser} from "./redux/userReducer";
-import {move} from "./components/TableScreen/MoveToGame";
+import {move} from "./MoveToGame";
 
 window.store = store;
 

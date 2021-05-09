@@ -1,6 +1,11 @@
+import axios from "axios";
+
 const ADD_TABLE = 'ADD-NEW-TABLE';
 const UPDATE_TABLES = 'UPDATE-TABLES';
 
+const GET_TABLES = 'GET-TABLES';
+
+export const getTables = () => ({type: 'GET-TABLES'});
 
 export const addNewLobby = () => ({type: 'ADD-NEW-TABLE'});
 
@@ -14,17 +19,15 @@ export const updateTablesPage = (newLobby) => (
 let initialState = {
     tables: {
         listOfTables: [
-            {id: 1, name : "pognali", type: "trivia", description: "none", maxPlayers: 8},
-            {id: 2, name : "pognali", type: "trivia", description: "none", maxPlayers: 8},
-            {id: 3, name : "pognali", type: "trivia", description: "none", maxPlayers: 8},
-            {id: 4, name : "pognali", type: "trivia", description: "none", maxPlayers: 8},
+
         ],
-        newLobby: {id: 5, name : "1", type: "trivia", description: "none", maxPlayers: 8}
+        newLobby: {id: 5, name: "1", type: "trivia", description: "none", maxPlayers: 8}
     }
 };
 
 
 export const tablesReducer = (state = initialState, action) => {
+
     switch (action.type) {
         case ADD_TABLE:
             let buff = {
@@ -43,6 +46,13 @@ export const tablesReducer = (state = initialState, action) => {
             state.tables.newLobby.description = action.newLobby.description;
             state.tables.newLobby.maxPlayers = action.newLobby.maxPlayers;
             return state;
+        case GET_TABLES:
+            const URLUsers = "http://localhost:3001/getLobbies";
+            axios.post(URLUsers, null)
+                .then(res => {
+                    state.tables.listOfTables = res.data;
+                })
+            return state
         default:
             return state;
     }

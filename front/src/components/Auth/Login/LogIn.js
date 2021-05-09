@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import axios from 'axios';
 import {initUser} from "../../../redux/userReducer";
 import {updateTablesPage} from "../../../redux/tablesReducer";
-import {move} from "../../TableScreen/MoveToGame";
+import {move} from "../../../MoveToGame";
 import Button from "@material-ui/core/Button";
 
 export function LogIn(props) {
@@ -20,7 +20,7 @@ export function LogIn(props) {
     }
 
     let Login = () => {
-        const URLUsers = "http://localhost:3000/login";
+        const URLUsers = "http://localhost:3001/login";
         let user = {
             name: userName.current.value,
             password: password.current.value,

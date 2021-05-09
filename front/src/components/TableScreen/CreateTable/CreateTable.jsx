@@ -7,8 +7,10 @@ import classes from "./CreateTable.module.css";
 import {Checkbox, TextField} from "@material-ui/core";
 import {addNewLobby, updateTablesPage} from "../../../redux/tablesReducer"
 import {connect} from "react-redux";
-import {move} from '../MoveToGame';
+import {move} from '../../../MoveToGame';
 import {addGame} from "../../../redux/gameReducer";
+import axios from "axios";
+import {initUser} from "../../../redux/userReducer";
 
 let addNewGame = (props, lobby) => {
     let action = addGame(lobby);
@@ -26,7 +28,8 @@ export function CreateTable(props) {
         name: props.tablesPage.tables.newLobby.name,
         type: props.tablesPage.tables.newLobby.type,
         description: props.tablesPage.tables.newLobby.description,
-        maxPlayers: props.tablesPage.tables.newLobby.maxPlayers
+        maxPlayers: props.tablesPage.tables.newLobby.maxPlayers,
+        host: props.host
     };
 
     let elementName = React.createRef();
@@ -47,8 +50,20 @@ export function CreateTable(props) {
     }
 
     let addNewTable = () => {
-        let action = addNewLobby();
-        props.dispatch(action);
+
+        const URLUsers = "http://localhost:3001/createLobby";
+
+        axios.post(URLUsers, buff)
+            .then(response => {
+                console.log(response);
+                if (response.data === true) {
+                    let action = addNewLobby();
+                    props.dispatch(action);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
     return (
         <div className={classes.tableScreen}>

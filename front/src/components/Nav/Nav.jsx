@@ -11,12 +11,9 @@ import {makeStyles, useTheme} from '@material-ui/core/styles';
 import BuildIcon from '@material-ui/icons/Build';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import BarChartIcon from '@material-ui/icons/BarChart';
-import GroupIcon from '@material-ui/icons/Group';
-import {IconButton, Tab} from "@material-ui/core";
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import cls from './Nav.module.css';
 import {Link} from "react-router-dom";
+import {ExitToApp} from "@material-ui/icons";
 
 const drawerWidth = 240;
 
@@ -99,19 +96,19 @@ function Nav(props) {
             </List>
             <Divider/>
             <List>
-                <ListItem button key={"Friends"}>
-                    <ListItemIcon> <GroupIcon/> </ListItemIcon>
-                    <ListItemText primary={"Friends"}/>
-                </ListItem>
                 <ListItem button key={"Ratings"}>
                     <ListItemIcon> <BarChartIcon/> </ListItemIcon>
                     <ListItemText primary={"Ratings"}/>
                 </ListItem>
+                <ListItem button key={"Settings"}>
+                    <ListItemIcon> <BuildIcon/> </ListItemIcon>
+                    <ListItemText primary={"Settings"}/>
+                </ListItem>
             </List>
             <Divider/>
-            <ListItem button key={"Settings"}>
-                <ListItemIcon> <BuildIcon/> </ListItemIcon>
-                <ListItemText primary={"Settings"}/>
+            <ListItem button key={"Log out"}>
+                <ListItemIcon> <ExitToApp/> </ListItemIcon>
+                <ListItemText primary={"Log out"}/>
             </ListItem>
         </div>
     );

@@ -1,8 +1,8 @@
-const MongoClient = require("mongodb").MongoClient;
-const Math = require("math");
-const dburl = "mongodb://localhost:27017/";
-mongoClient = new MongoClient(dburl, { useUnifiedTopology: true, autoIndex: false});
-let player = {name: "Lom", age: 20};
+// const MongoClient = require("mongodb").MongoClient;
+// const Math = require("math");
+// const dburl = "mongodb://localhost:27017/";
+// mongoClient = new MongoClient(dburl, { useUnifiedTopology: true, autoIndex: false});
+// let player = {name: "Lom", age: 20};
 
 //Проверка на вставку
 
