@@ -11,7 +11,7 @@ const useStyles = makeStyles({
     root: {
         maxWidth: 100,
         border: 1,
-        margin: 10,
+        margin: 5,
 
     },
 });
@@ -40,7 +40,7 @@ export default function GameCard(props) {
     return (
         <Card className={defClasses.root + classes.gameCard}>
             <CardContent>
-                    <Typography className={classes.topic} variant="h5" component="h2">
+                    <Typography className={classes.topic} variant="h4" component="h2">
                         {props.question[0].topic}
                     </Typography>
                     <Typography className={classes.text} variant="body2" color="textSecondary" component="p">

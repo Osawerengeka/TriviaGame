@@ -1,37 +1,43 @@
-// const MongoClient = require("mongodb").MongoClient;
-// const Math = require("math");
-// const dburl = "mongodb://localhost:27017/";
-// mongoClient = new MongoClient(dburl, { useUnifiedTopology: true, autoIndex: false});
-// let player = {name: "Lom", age: 20};
+const MongoClient = require("mongodb").MongoClient;
+const dburl = "mongodb://localhost:27017/";
+mongoClient = new MongoClient(dburl, {useUnifiedTopology: true, autoIndex: false});
+let player =
+    {
+        id: 2,
+        topic: "Народные песни",
+        question: "Какая березка стояла во поле?",
+        ansVariants: ["Кудрявая", "Высокая", "Зеленая", "Засохшая"],
+        answer: "Кудрявая"
+    }
 
-//Проверка на вставку
 
-// mongoClient.connect(function(err, client){
-// 	if(err){
-// 		return console.log(err)
-// 	}
-// 	let db = client.db('WEB');
-// 	let collection = db.collection('players');
-// 	collection.findOne({name: player.name}, (err, item) => {
-// 		if (err) {
-// 			console.log({'error':'An error has occurred'});
-// 		} else {
-// 			if(item != null) {
-// 				client.close();
-// 				return false;
-// 			}
-// 			else{
-// 				collection.insertOne(player, function(err, result){
-// 					if(err){
-// 						return console.log(err);
-// 					}
-// 					client.close();
-// 					return true;
-// 				});
-// 			}
-// 		}
-// 	});
-// });
+mongoClient.connect(function(err, client){
+    if(err){
+        return console.log(err)
+    }
+    let db = client.db('WEB');
+    let collection = db.collection('QA');
+    collection.findOne((err, item) => {
+        if (err) {
+            console.log({'error':'An error has occurred'});
+        } else {
+            if(item != null) {
+                client.close();
+                return false;
+            }
+            else{
+                collection.insertOne(player, function(err, result){
+                    if(err){
+                        return console.log(err);
+                    }
+                    client.close();
+                    return true;
+                });
+            }
+        }
+    });
+});
+
 
 //Проверка на поиск
 
@@ -210,8 +216,6 @@
 // });
 
 
-
-
 //
 // function resolveAfter2Seconds(x) {
 //     return new Promise(resolve => {
@@ -241,3 +245,5 @@
 // };
 //
 // f2();
+
+

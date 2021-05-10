@@ -11,40 +11,30 @@ let close = (props, lobby) => {
     props.dispatch(action);
 }
 
-function start(props, settings) {
-    console.log(props, settings);
-    if (props.name === settings.host) {
-
-
-    } else {
-        alert("YOU ARE NOT HOST")
-    }
-
-}
-
 function GameScreen(props) {
-    const [messages, setMessages] = useState([]);
-    const [value, setValue] = useState('');
     const socket = useRef();
     const [connected, setConnected] = useState(false);
+    const [players, setPlayers] = useState([]);
+
 
     function connect() {
         socket.current = new WebSocket('ws://localhost:5000')
-
         socket.current.onopen = () => {
             setConnected(true)
             const message = {
                 event: 'connection',
-                username,
-                id: Date.now()
+                name: props.name,
+                host: props.gamePage.game.settings.host
             }
             socket.current.send(JSON.stringify(message))
         }
         socket.current.onmessage = (event) => {
             const message = JSON.parse(event.data)
-            setMessages(prev => [message, ...prev])
+            if(message.ev === "getPlayers"){
+                setPlayers(message.items);
+            }
         }
-        socket.current.onclose= () => {
+        socket.current.onclose = () => {
             console.log('Socket закрыт')
         }
         socket.current.onerror = () => {
@@ -52,18 +42,45 @@ function GameScreen(props) {
         }
     }
 
+    function init() {
+        const message = {
+            event: 'getPlayers',
+            name: props.name,
+            host: props.gamePage.game.settings.host
+        }
+        socket.current.send(JSON.stringify(message))
+    }
+
+    function start(props, settings) {
+        connect();
+        if (props.name === props.gamePage.game.settings.host)
+        {
+            const message = {
+                event: 'firstGetQuestion',
+                roomID: props.gamePage.game.settings.host
+            }
+            socket.current.send(JSON.stringify(message))
+        }
+    }
 
     return (
         <div className={classes.gameScreen}>
             <div className={classes.gameScreenGrid}>
                 <GameCard question={props.gamePage.game.rounds.question}/>
-                <UsersRanking/>
+                {players.length !== 0 && <UsersRanking players={players}/>}
                 <Button onClick={() => {
                     close(props, props.gamePage.game.settings);
                 }} className={classes.exitButton} size="small" color="primary">exit</Button>
-                <Button onClick={() => {
+                {props.name === props.gamePage.game.settings.host && <Button onClick={() => {
                     start(props, props.gamePage.game.settings);
-                }} className={classes.startButton} size="small" color="primary">start</Button>
+                    // init(props, props.gamePage.game.settings);
+                }} className={classes.startButton} size="small" color="primary">start</Button>}
+
+                {props.name !== props.gamePage.game.settings.host && <Button onClick={() => {
+                    start(props, props.gamePage.game.settings);
+                    // init(props, props.gamePage.game.settings);
+                }} className={classes.startButton} size="small" color="primary">init</Button>}
+
             </div>
         </div>
     );

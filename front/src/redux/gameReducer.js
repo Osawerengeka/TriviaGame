@@ -19,7 +19,7 @@ let initialState = {
     game: {
         rounds: {
             question: [
-                {topic: "test", question: "a ili b ili c ili d", ansVariants: ["a", "b", "c", "d"], answer: "a"}
+                {topic: "test", question: "a ili b ili c ili d", ansVariants: ["a", "b", "c", "d"], answer: null}
             ]
         },
         settings: {
