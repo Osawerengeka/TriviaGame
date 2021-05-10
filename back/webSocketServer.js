@@ -10,7 +10,6 @@ const wss = new ws.Server({
 
 wss.on('connection', function connection(ws) {
     ws.roomID = -1;
-    //от 1 до 4, ну то есть если Хост то 1, если player2, то 2 и т.д.
     ws.playerNumber = 0;
     ws.points = 0;
 
@@ -19,10 +18,10 @@ wss.on('connection', function connection(ws) {
         console.log(message.host);
         switch (message.event) {
             case 'postAnswer':
-                let check = checkAnswer(message);
+                checkAnswer(message, ws);
                 if (check === true) postAboutAnswer(ws.roomID, ws.playerNumber);
                 else postAboutWrongAnswer(ws.roomID, ws.playerNumber);
-                let Q = getQA();
+                let Q = sendQA();
                 ws.send(Q);
                 break;
             case 'connection':
@@ -45,18 +44,18 @@ wss.on('connection', function connection(ws) {
 
                 break;
             case 'getPlayers':
-                // let players = {ev: 'getPlayers', items: []};
-                // wss.clients.forEach(client => {
-                //     if (client.roomID === message.host) {
-                //         players.items.push({
-                //             name: client.name,
-                //             points: client.points
-                //         });
-                //
-                //     }
-                // })
-                // ws.send(players);
-                // break;
+            // let players = {ev: 'getPlayers', items: []};
+            // wss.clients.forEach(client => {
+            //     if (client.roomID === message.host) {
+            //         players.items.push({
+            //             name: client.name,
+            //             points: client.points
+            //         });
+            //
+            //     }
+            // })
+            // ws.send(players);
+            // break;
             case 'firstGetQuestion':
                 console.log("alo");
                 //функция высылки вопроса
@@ -69,7 +68,7 @@ wss.on('connection', function connection(ws) {
     ws.on('close', (e) => console.log('websocket closed ' + e))
 })
 
-function checkAnswer(message) {
+function checkAnswer(message, ws) {
     mongoClient.connect(function (err, client) {
         if (err) {
             return console.log(err)
@@ -80,8 +79,13 @@ function checkAnswer(message) {
             if (item == null) {
                 return false;
             } else {
-                if (item.rightAnswer === message.answer) return true;
-                else return false;
+                if (item.rightAnswer === message.answer){
+                    postAboutAnswer(ws.roomID, ws.playerNumber);
+                }
+                else {
+                    postAboutWrongAnswer(ws.roomID, ws.playerNumber);
+                }
+                sendQA(ws);
             }
         });
     });
@@ -89,7 +93,6 @@ function checkAnswer(message) {
 
 function postAboutAnswer(id, playerID) {
     wss.clients.forEach(client => {
-        //А что отправлять я пока не понел. (Решился на костыльный метод)
         let mes = {
             player: playerID,
             answer: 'true'
@@ -110,7 +113,7 @@ function postAboutWrongAnswer(id, playerID) {
     })
 }
 
-async function getQA() {
+async function sendQA(client) {
     mongoClient.connect(function (err, client) {
         if (err) {
             return console.log(err)
@@ -118,7 +121,7 @@ async function getQA() {
         let db = client.db('WEB');
         let collection = db.collection('QA');
         collection.find().toArray(function (err, results) {
-            return results[Math.floor(Math.random() * (results.length))];
+            client.send(JSON.stringify(results[Math.floor(Math.random() * results.length)]));
         });
     });
 }
@@ -127,9 +130,7 @@ function postQforAll(id) {
     wss.clients.forEach(client => {
         let Q;
         if (client.roomID === id) {
-            Q = getQA();
-            client.send(JSON.stringify(Q));
+            sendQA(client);
         }
     })
 }
-
