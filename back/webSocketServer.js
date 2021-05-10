@@ -8,6 +8,23 @@ const wss = new ws.Server({
 }, () => console.log(`Server started on 5000`))
 
 
+async function wait(){
+    let x = await resolveAfter2Seconds(10);
+}
+
+async function releaseWait(){
+    await wait();
+}
+
+function resolveAfter2Seconds(x){
+    return new Promise(resolve => {
+        setTimeout(()=>{
+            resolve(x);
+        }, 2000)
+    })
+}
+
+
 wss.on('connection', function connection(ws) {
     ws.roomID = -1;
     //от 1 до 4, ну то есть если Хост то 1, если player2, то 2 и т.д.
@@ -80,7 +97,7 @@ function postAboutWrongAnswer(id, playerID){
     })
 }
 
-function getQA(){
+async function getQA(){
     mongoClient.connect(function(err, client){
  	if(err){
  		return console.log(err)
@@ -88,6 +105,7 @@ function getQA(){
  	let db = client.db('WEB');
  	let collection = db.collection('players');
  	collection.find().toArray(function(err, results){
+ 	    releaseWait();
  		return results[Math.floor(Math.random() * (results.length))];
  	});
  });
@@ -102,3 +120,4 @@ function  postQforAll(id){
         }
     })
 }
+
