@@ -12,6 +12,7 @@ const useStyles = makeStyles({
         maxWidth: 100,
         border: 1,
         margin: 10,
+
     },
 });
 

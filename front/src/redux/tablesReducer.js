@@ -18,10 +18,9 @@ export const updateTablesPage = (newLobby) => (
 
 let initialState = {
     tables: {
-        listOfTables: [
-
-        ],
-        newLobby: {id: 5, name: "1", type: "trivia", description: "none", maxPlayers: 8}
+        listOfTables: [],
+        isFetching: true,
+        newLobby: {id: null, name: "1", type: "trivia", description: "none", maxPlayers: 8}
     }
 };
 
@@ -48,9 +47,10 @@ export const tablesReducer = (state = initialState, action) => {
             return state;
         case GET_TABLES:
             const URLUsers = "http://localhost:3001/getLobbies";
-            axios.post(URLUsers, null)
+            axios.get(URLUsers)
                 .then(res => {
                     state.tables.listOfTables = res.data;
+                    state.tables.isFetching = false;
                 })
             return state
         default:

@@ -13,7 +13,7 @@ import axios from "axios";
 import {initUser} from "../../../redux/userReducer";
 
 let addNewGame = (props, lobby) => {
-    let action = addGame(lobby);
+    let action = addGame(lobby, props.name);
     props.dispatch(action);
 }
 
@@ -87,7 +87,7 @@ export function CreateTable(props) {
                         step={1}
                         marks
                         min={1}
-                        max={8}
+                        max={4}
                         valueLabelDisplay="auto"
                     /></div>
             </div>

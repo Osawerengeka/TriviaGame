@@ -30,18 +30,20 @@ export function App(props) {
                         <Header isLobbyNotEnabled={props.state.gamePage.isLobbyNotEnable}/>
                         <Switch>
                             <Route exact path="/feed/tablescreen" render={() => {
-                                return <Tables tablesPage={props.state.tablesPage} dispatch={props.dispatch}/>
+                                return <Tables name = {props.state.user.user.name} tablesPage={props.state.tablesPage} dispatch={props.dispatch}/>
                             }}/>
                             <Route path="/feed/tablescreen/create" render={
                                 () => {
                                     return <CreateTable
                                         tablesPage={props.state.tablesPage}
                                         host={props.state.user.user.name}
+                                        name={props.state.user.user.name}
                                         dispatch={props.dispatch}/>
+
                                 }}
                             />
                             <Route path="/feed/gamescreen" render={() => {
-                                return <GameScreen gamePage={props.state.gamePage} dispatch={props.dispatch}/>
+                                return <GameScreen name = {props.state.user.user.name} gamePage={props.state.gamePage} dispatch={props.dispatch}/>
                             }}/>
                             <Route path="feed/Profile" render={() => {
                                 return <LogIn/>

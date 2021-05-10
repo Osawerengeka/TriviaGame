@@ -11,36 +11,6 @@ const MongoClient = require("mongodb").MongoClient;
 const dburl = "mongodb://localhost:27017/";
 mongoClient = new MongoClient(dburl, {useUnifiedTopology: true, autoIndex: false});
 
-// // подключённые клиенты
-// const clients = {};
-//
-// // WebSocket-сервер на порту 8081
-// const webSocketServer = new WebSocketServer.Server({
-//     port: 8081
-// });
-//
-// webSocketServer.on('connection', function(ws) {
-//
-//     const id = Math.random();
-//     clients[id] = ws;
-//     console.log("новое соединение " + id);
-//
-//     ws.on('message', function(message) {
-//         console.log('получено сообщение ' + message);
-//
-//         for (const key in clients) {
-//             clients[key].send(message);
-//         }
-//     });
-//
-//     ws.on('close', function() {
-//         console.log('соединение закрыто ' + id);
-//         delete clients[id];
-//     });
-//
-// });
-
-
 //пример как это работает закинул в качестве файлов example и exampleApp
 //вообще работать должно, но как у тебя джсоны обрабатываются я не знаю так что слова "работает" означает что респонсится куда-то успешно.
 const cors = require('cors');
@@ -125,7 +95,8 @@ app.post("/createLobby", urlencodedParser, function (request, response) {
         });
     })
 })
-app.post("/getLobbies", urlencodedParser, function (request, response) {
+
+app.get("/getLobbies", urlencodedParser, function (request, response) {
     if (!request.body) return response.sendStatus(400);
     mongoClient.connect(function (err, client) {
         if (err) {
@@ -134,15 +105,118 @@ app.post("/getLobbies", urlencodedParser, function (request, response) {
         let db = client.db('WEB');
         let collection = db.collection('lobby');
         collection.find().toArray(function (err, results) {
-            console.log(results);
             response.send(results);
         });
     });
 
 });
-app.post("/path2", urlencodedParser, function (request, response) {
+
+app.post("/addPlayer", urlencodedParser, function (request, response) {
     if (!request.body) return response.sendStatus(400);
-    response.send(QA.getQandA());
+
+    let newPlayerName = request.body.name;
+    let lobbyHostName = request.body.settings.host;
+    console.log(lobbyHostName, newPlayerName);
+        let filter = {host: lobbyHostName}
+        mongoClient.connect(function (err, client) {
+            if (err) {
+                return console.log(err)
+            }
+            let db = client.db('WEB');
+            let collection = db.collection('lobby');
+            collection.findOne(filter, (err, item) => {
+                if (err) {
+                    return console.log(err);
+                }
+                let updateDocument;
+                if (item.player2 === '' || item.player2 == null) {
+                    updateDocument = {
+                        $set: {
+                            player2: newPlayerName
+                        },
+                    };
+                } else if (item.player3 === '' || item.player3 == null) {
+                    updateDocument = {
+                        $set: {
+                            player3: newPlayerName
+                        },
+                    };
+                } else if (item.player4 === '' || item.player4 == null) {
+                    updateDocument = {
+                        $set: {
+                            player4: newPlayerName
+                        },
+                    };
+                } else return false;
+                collection.updateOne(filter, updateDocument, (err, result) => {
+                    return true;
+                });
+            });
+        });
+});
+
+
+app.post("/closeLobby", urlencodedParser, function (request, response) {
+    if (!request.body) return response.sendStatus(400);
+
+    let delHostName = request.body.settings.host;
+
+    mongoClient.connect(function (err, client) {
+        if (err) {
+            return console.log(err)
+        }
+        let db = client.db('WEB');
+        let collection = db.collection('lobby');
+        collection.deleteOne({host: delHostName}, (err, item) => {
+            if (err) {
+                return console.log(err);
+            }
+            return true;
+        });
+    });
+});
+app.post("/exitLobby", urlencodedParser, function (request, response) {
+    if (!request.body) return response.sendStatus(400);
+
+    let delPlayerName = request.body.name;
+    let lobbyHostName = request.body.settings.host;
+
+    let filter = {host: lobbyHostName}
+    mongoClient.connect(function (err, client) {
+        if (err) {
+            return console.log(err)
+        }
+        let db = client.db('WEB');
+        let collection = db.collection('lobby');
+        collection.findOne(filter, (err, item) => {
+            if (err) {
+                return console.log(err);
+            }
+            let updateDocument;
+            if (item.player2 == delPlayerName) {
+                updateDocument = {
+                    $set: {
+                        player2: ''
+                    },
+                };
+            } else if (item.player3 == delPlayerName) {
+                updateDocument = {
+                    $set: {
+                        player3: ''
+                    },
+                };
+            } else if (item.player4 == delPlayerName) {
+                updateDocument = {
+                    $set: {
+                        player4: ''
+                    },
+                };
+            } else return false;
+            collection.updateOne(filter, updateDocument, (err, result) => {
+                return true;
+            });
+        });
+    });
 });
 
 app.listen(3001, function () {

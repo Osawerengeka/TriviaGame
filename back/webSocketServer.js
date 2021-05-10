@@ -36,8 +36,8 @@ wss.on('connection', function connection(ws) {
         }
     })
 
-    ws.on('error',e=>console.log(e))
-    ws.on('close',(e)=>console.log('websocket closed'+e))
+    ws.on('error',e => console.log(e))
+    ws.on('close',(e) => console.log('websocket closed '+e))
 })
 
 function checkAnswer(message) {

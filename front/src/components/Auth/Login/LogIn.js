@@ -25,7 +25,6 @@ export function LogIn(props) {
             name: userName.current.value,
             password: password.current.value,
         }
-
         let text;
         axios.post(URLUsers, user)
             .then(response => {
@@ -39,7 +38,6 @@ export function LogIn(props) {
             .catch(function (error) {
                 console.log(error);
             });
-
     }
 
     return (

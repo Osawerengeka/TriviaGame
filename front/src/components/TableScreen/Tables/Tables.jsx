@@ -6,14 +6,15 @@ import {addGame} from "../../../redux/gameReducer";
 import axios from "axios";
 import {getTables} from "../../../redux/tablesReducer";
 import RefreshIcon from '@material-ui/icons/Refresh';
-
+import {CircularProgress} from '@material-ui/core';
 
 let addNewGame = (props, lobby) => {
-    let action = addGame(lobby);
+    let action = addGame(lobby, props.name);
     props.dispatch.dispatch(action);
 }
 
 export function TableGame(props) {
+
     let lobby = {
         host: props.lobby.host,
         id: props.lobby.id,
@@ -44,12 +45,15 @@ let getLobbies = (props) => {
 export function Tables(props) {
 
     let [lobbies, setLobbies] = useState(props.tablesPage.tables.listOfTables);
-
-    console.log(lobbies);
+    let [fetching, setFetching] = useState(props.tablesPage.tables.isFetching)
 
     useEffect(() => {
         setLobbies(props.tablesPage.tables.listOfTables);
-    })
+    }, [props.tablesPage.tables.listOfTables])
+
+    useEffect(() => {
+    setFetching(props.tablesPage.tables.isFetching);
+    }, [props.tablesPage.tables.listOfTables])
 
     return (
         <Table className={classes.tableScreen}>
@@ -65,7 +69,10 @@ export function Tables(props) {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {lobbies.map(el => <TableGame dispatch={props} lobby={el}/>)}
+                {fetching === true &&
+                <CircularProgress/>}
+                {fetching === false &&
+                lobbies.map(el => <TableGame name={props.name} dispatch={props} lobby={el}/>)}
             </TableBody>
         </Table>
     )
