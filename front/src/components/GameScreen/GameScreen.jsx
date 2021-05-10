@@ -26,11 +26,11 @@ function GameScreen(props) {
                 name: props.name,
                 host: props.gamePage.game.settings.host
             }
-            socket.current.send(JSON.stringify(message))
+            send(JSON.stringify(message))
         }
         socket.current.onmessage = (event) => {
             const message = JSON.parse(event.data)
-            if(message.ev === "getPlayers"){
+            if (message.ev === "getPlayers") {
                 setPlayers(message.items);
             }
         }
@@ -48,20 +48,35 @@ function GameScreen(props) {
             name: props.name,
             host: props.gamePage.game.settings.host
         }
-        socket.current.send(JSON.stringify(message))
+        send(JSON.stringify(message))
     }
 
     function start(props, settings) {
         connect();
-        if (props.name === props.gamePage.game.settings.host)
-        {
+        if (props.name === props.gamePage.game.settings.host) {
             const message = {
                 event: 'firstGetQuestion',
                 roomID: props.gamePage.game.settings.host
             }
-            socket.current.send(JSON.stringify(message))
+            send(JSON.stringify(message))
         }
     }
+
+    let waitForConnection = function (callback, interval) {
+        if (socket.current.readyState === 1) {
+            callback();
+        } else {
+            setTimeout(function () {
+                waitForConnection(callback, interval);
+            }, interval);
+        }
+    };
+
+    let send = function (message) {
+        waitForConnection(function () {
+            socket.current.send(message);
+        }, 5000);
+    };
 
     return (
         <div className={classes.gameScreen}>

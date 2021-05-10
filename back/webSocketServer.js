@@ -58,6 +58,7 @@ wss.on('connection', function connection(ws) {
                 // ws.send(players);
                 // break;
             case 'firstGetQuestion':
+                console.log("alo");
                 //функция высылки вопроса
                 postQforAll(ws.roomID);
                 break;
@@ -117,7 +118,6 @@ async function getQA() {
         let db = client.db('WEB');
         let collection = db.collection('QA');
         collection.find().toArray(function (err, results) {
-            releaseWait();
             return results[Math.floor(Math.random() * (results.length))];
         });
     });
@@ -128,7 +128,7 @@ function postQforAll(id) {
         let Q;
         if (client.roomID === id) {
             Q = getQA();
-            client.send(Q);
+            client.send(JSON.stringify(Q));
         }
     })
 }
