@@ -12,7 +12,7 @@ wss.on('connection', function connection(ws) {
     ws.roomID = -1;
     ws.name = 0;
     ws.points = 0;
-
+    ws.aQ = [];
     ws.on('message', function (message) {
             message = JSON.parse(message)
             console.log(message);
@@ -139,8 +139,17 @@ async function sendQA(c) {
         }
         let db = client.db('WEB');
         let collection = db.collection('QA');
+        let searchQ = true;
         collection.find().toArray(function (err, results) {
-            let Q = {ev: 'firstGetQuestion', items: results[Math.floor(Math.random() * results.length)]};
+            while(searchQ == true){
+                searchQ = false;
+                let res = results[Math.floor(Math.random() * results.length)];
+                for(let i = 0; i < client.aQ.length; i++){
+                    if (client.aQ[i] == res.id) searchQ = true;
+                }
+            }
+            let Q = {ev: 'firstGetQuestion', items: res};
+            client.aQ.push(res.id)
             c.send(JSON.stringify(Q));
         });
     });
