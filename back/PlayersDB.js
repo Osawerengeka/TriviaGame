@@ -1,47 +1,65 @@
+async function wait(){
+	let x = await resolveAfter2Seconds(10);
+	console.log(x);
+}
+
+function resolveAfter2Seconds(x){
+	return new Promise(resolve => {
+		setTimeout(()=>{
+			resolve(x);
+		}, 20000)
+	})
+}
+
 class PlayerDBClient {
-	addPlayer(player, mongoClient) {
+	addPlayer(player, mongoClient, response) {
 		mongoClient.connect(function(err, client){
 			if(err){
 				return console.log(err)
 			}
-			const db = client.db('WEB');
-			const collection = db.collection('players');
-			//ВНИМАТЕЛЬНО!!!! В СЛЕДУЮЩЕЙ СТРОЧКЕ ВМЕСТО name ДОЛЖНО БЫТЬ ПОЛЕ КОТОРЫМ ТЫ НАЗЫВАЕШЬ ЛОГИН!!!!!!!!!!!!!!
+			let db = client.db('WEB');
+			let collection = db.collection('players');
+			let salt = crypto.randomBytes(16).toString('hex');
+			let hash = crypto.pbkdf2Sync(player.password, salt, 1000, 64, `sha512`).toString(`hex`);
 			collection.findOne({name: player.name}, (err, item) => {
 				if (err) {
 					console.log({'error':'An error has occurred'});
-				} else {
-					if(item != null) {
-						client.close();
-						return false;
+				}
+				else{
+					let newPlayer ={
+						login: player.login,
+						hash: hash,
+						salt: salt
 					}
-					else{
-						collection.insertOne(player, function(err, result){
-							if(err){
-								return console.log(err);
-							}
-							client.close();
-							return true;
-						});
-					}
+					collection.insertOne(newPlayer, function(err, result){
+						if(err){
+							return console.log(err);
+						}
+						response.send(true);
+					});
 				}
 			});
 		});
 	};
-	findPlayer(player, mongoClient) {
-		mongoClient.connect(function(err, client){
+	async findPlayer(player, mongoClient, response) {
+		await resolveAfter2Seconds();
+		await mongoClient.connect(function(err, client){
 			if(err){
 				return console.log(err)
 			}
-			const db = client.db('WEB');
-			const collection = db.collection('players');
-			collection.find(player,(err, item) =>{
-				client.close();
-				if (item == null) return false;
-				return true;
+			let db = client.db('WEB');
+			let collection = db.collection('players');
+
+			collection.findOne({name: player.name}, (err, item) =>{
+				if(err){
+					return console.log(err);
+				}
+				//console.log(item);
+				let hash = crypto.pbkdf2Sync(player.password, item.salt, 1000, 64, `sha512`).toString(`hex`);
+				if (hash == item.hash) response.send("true");
+				else response.send("false");;
 			});
 		});
-
 	}
 };
 

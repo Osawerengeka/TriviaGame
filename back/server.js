@@ -1,5 +1,6 @@
 const WebSocketServer = new require('ws');
 const PlayerDb = require('./PlayersDB');
+var crypto = require('crypto');
 const QAdb = require('./QandADB')
 const express = require("express");
 const bodyParser = require("body-parser");
