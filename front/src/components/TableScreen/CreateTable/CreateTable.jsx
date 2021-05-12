@@ -6,16 +6,21 @@ import Button from "@material-ui/core/Button";
 import classes from "./CreateTable.module.css";
 import {Checkbox, TextField} from "@material-ui/core";
 import {addNewLobby, updateTablesPage} from "../../../redux/tablesReducer"
-import {connect} from "react-redux";
 import {move} from '../../../MoveToGame';
-import {addGame} from "../../../redux/gameReducer";
+import {addGame, connectTo} from "../../../redux/gameReducer";
 import axios from "axios";
 import {initUser} from "../../../redux/userReducer";
 
-let addNewGame = (props, lobby) => {
+function addNewGame(props, lobby) {
     let action = addGame(lobby, props.name);
     props.dispatch(action);
 }
+
+function connect(props) {
+    let action = connectTo(props.name);
+    props.dispatch(action);
+}
+
 
 export function CreateTable(props) {
 
@@ -77,8 +82,8 @@ export function CreateTable(props) {
                 <Typography id="discrete-slider-small-steps" gutterBottom>
                     Amount of Players
                 </Typography>
-                <div  className={classes.slider}>
-                 <Slider
+                <div className={classes.slider}>
+                    <Slider
                         id="slider"
                         defaultValue={4}
                         onChange={onchangeMaxPlayers}
@@ -105,7 +110,12 @@ export function CreateTable(props) {
                     <label>Forever mode</label>
                 </Typography>
             </div>
-            <div onClick={ () => {addNewTable(); addNewGame(props, buff); move("/feed/gamescreen");}}>
+            <div onClick={() => {
+                addNewTable();
+                addNewGame(props, buff);
+                connect(props);
+                move("/feed/gamescreen");
+            }}>
                 <Button variant="contained" color="primary">
                     Create lobby
                 </Button>

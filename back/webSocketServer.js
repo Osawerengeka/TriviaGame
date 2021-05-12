@@ -10,59 +10,61 @@ const wss = new ws.Server({
 
 wss.on('connection', function connection(ws) {
     ws.roomID = -1;
-    ws.playerNumber = 0;
+    ws.name = 0;
     ws.points = 0;
 
     ws.on('message', function (message) {
-        message = JSON.parse(message)
-        console.log(message.host);
-        switch (message.event) {
-            case 'postAnswer':
-                checkAnswer(message, ws);
-                if (check === true) postAboutAnswer(ws.roomID, ws.playerNumber);
-                else postAboutWrongAnswer(ws.roomID, ws.playerNumber);
-                let Q = sendQA();
-                ws.send(Q);
-                break;
-            case 'connection':
-                console.log(message + "connected");
-                ws.roomID = message.host;
-                ws.name = message.name;
-                ws.points = 0;
-
-                let players = {ev: 'getPlayers', items: []};
-                wss.clients.forEach(client => {
-                    if (client.roomID === message.host) {
-                        players.items.push({
-                            name: client.name,
-                            points: client.points
-                        });
-                    }
-                })
-                console.log(players);
-                ws.send(JSON.stringify(players));
-
-                break;
-            case 'getPlayers':
-            // let players = {ev: 'getPlayers', items: []};
-            // wss.clients.forEach(client => {
-            //     if (client.roomID === message.host) {
-            //         players.items.push({
-            //             name: client.name,
-            //             points: client.points
-            //         });
-            //
-            //     }
-            // })
-            // ws.send(players);
-            // break;
-            case 'firstGetQuestion':
-                console.log("alo");
-                //функция высылки вопроса
-                postQforAll(ws.roomID);
-                break;
+            message = JSON.parse(message)
+            console.log(message);
+            switch (message.event) {
+                case 'postAnswer':
+                    checkAnswer(message, ws);
+                    break;
+                case 'connection':
+                    ws.roomID = message.host;
+                    ws.name = message.name;
+                    ws.points = 0;
+                    let players = {ev: 'getPlayers', items: []};
+                    wss.clients.forEach(client => {
+                        if (client.roomID === message.host) {
+                            players.items.push({
+                                name: client.name,
+                                points: client.points
+                            });
+                        }
+                    })
+                    wss.clients.forEach(client => {
+                        if (client.roomID === message.host) {
+                            console.log(client.roomID);
+                            console.log(client.name);
+                            client.send(JSON.stringify(players));
+                        }
+                    });
+                    break;
+                case'getPlayers':
+                    let p = {ev: 'getPlayers', items: []};
+                    wss.clients.forEach(client => {
+                        if (client.roomID === message.host) {
+                            p.items.push({
+                                name: client.name,
+                                points: client.points
+                            });
+                        }
+                    })
+                    wss.clients.forEach(client => {
+                        if (client.roomID === message.host) {
+                            console.log(client.name);
+                            ws.send(JSON.stringify(p));
+                        }
+                    });
+                    break;
+                case 'firstGetQuestion':
+                    //функция высылки вопроса
+                    postQforAll(ws.roomID);
+                    break;
+            }
         }
-    })
+    )
 
     ws.on('error', e => console.log(e))
     ws.on('close', (e) => console.log('websocket closed ' + e))
@@ -74,16 +76,18 @@ function checkAnswer(message, ws) {
             return console.log(err)
         }
         const db = client.db('WEB');
-        const collection = db.collection('QandA');
-        collection.findOne(message.qID, (err, item) => {
+        const collection = db.collection('QA');
+        collection.findOne({id: message.id}, (err, item) => {
             if (item == null) {
+                console.log("nothing");
                 return false;
             } else {
-                if (item.rightAnswer === message.answer){
-                    postAboutAnswer(ws.roomID, ws.playerNumber);
-                }
-                else {
-                    postAboutWrongAnswer(ws.roomID, ws.playerNumber);
+                if (item.answer === message.answer) {
+                    console.log("right");
+                    postAboutAnswer(ws);
+                } else {
+                    console.log("wrong");
+                    postAboutWrongAnswer(ws);
                 }
                 sendQA(ws);
             }
@@ -91,29 +95,44 @@ function checkAnswer(message, ws) {
     });
 }
 
-function postAboutAnswer(id, playerID) {
+function postAboutAnswer(ws) {
+    ws.points += 15;
+    let p = {ev: 'getPlayers', items: []};
     wss.clients.forEach(client => {
-        let mes = {
-            player: playerID,
-            answer: 'true'
+        if (client.roomID === ws.roomID) {
+            p.items.push({
+                name: client.name,
+                points: client.points
+            });
         }
-        wss.clients.forEach(client => {
-            if (client.roomID === id) client.send(mes);
-        })
     })
-}
 
-function postAboutWrongAnswer(id, playerID) {
-    let mes = {
-        player: playerID,
-        answer: 'false'
-    }
     wss.clients.forEach(client => {
-        if (client.roomID === id) client.send(mes);
+        if (client.roomID === ws.roomID) {
+            client.send(JSON.stringify(p));
+        }
     })
 }
 
-async function sendQA(client) {
+function postAboutWrongAnswer(ws) {
+    ws.points -= 15;
+
+    let p = {ev: 'getPlayers', items: []};
+    wss.clients.forEach(client => {
+        if (client.roomID === ws.roomID) {
+            p.items.push({
+                name: client.name,
+                points: client.points
+            });
+        }
+    })
+
+    wss.clients.forEach(client => {
+        if (client.roomID === ws.roomID) client.send(JSON.stringify(p));
+    })
+}
+
+async function sendQA(c) {
     mongoClient.connect(function (err, client) {
         if (err) {
             return console.log(err)
@@ -121,14 +140,15 @@ async function sendQA(client) {
         let db = client.db('WEB');
         let collection = db.collection('QA');
         collection.find().toArray(function (err, results) {
-            client.send(JSON.stringify(results[Math.floor(Math.random() * results.length)]));
+            let Q = {ev: 'firstGetQuestion', items: results[Math.floor(Math.random() * results.length)]};
+            c.send(JSON.stringify(Q));
         });
     });
 }
 
 function postQforAll(id) {
     wss.clients.forEach(client => {
-        let Q;
+
         if (client.roomID === id) {
             sendQA(client);
         }

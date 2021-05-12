@@ -1,104 +1,60 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import classes from "./GameScreen.module.css";
 import GameCard from "./GameCard";
 import {UsersRanking} from "./UsersRanking";
 import Button from "@material-ui/core/Button";
-import {closeGame} from "../../redux/gameReducer";
+import {closeGame, connectTo, getQ} from "../../redux/gameReducer";
 
 let close = (props, lobby) => {
     let action = closeGame(lobby, props.name);
-    console.log(props.dispatch);
     props.dispatch(action);
 }
 
-function GameScreen(props) {
-    const socket = useRef();
-    const [connected, setConnected] = useState(false);
-    const [players, setPlayers] = useState([]);
+let getFirstQuestion = (props) => {
+    let action = getQ(props.gamePage.game.settings.host, props.name);
+    props.dispatch(action);
+}
 
-
-    function connect() {
-        socket.current = new WebSocket('ws://localhost:5000')
-        socket.current.onopen = () => {
-            setConnected(true)
-            const message = {
-                event: 'connection',
-                name: props.name,
-                host: props.gamePage.game.settings.host
-            }
-            send(JSON.stringify(message))
-        }
-        socket.current.onmessage = (event) => {
-            const message = JSON.parse(event.data)
-            if (message.ev === "getPlayers") {
-                setPlayers(message.items);
-            }
-        }
-        socket.current.onclose = () => {
-            console.log('Socket закрыт')
-        }
-        socket.current.onerror = () => {
-            console.log('Socket произошла ошибка')
-        }
+let waitForConnection = function (callback, interval) {
+        callback();
+        setTimeout(function () {
+            waitForConnection(callback, interval);
+        }, interval);
     }
 
-    function init() {
-        const message = {
-            event: 'getPlayers',
-            name: props.name,
-            host: props.gamePage.game.settings.host
-        }
-        send(JSON.stringify(message))
+let f = function (callback) {
+    waitForConnection(function () {
+        callback();
+    }, 1000);
+};
+
+class GameScreen extends React.Component {
+    constructor(props) {
+        super(props);
     }
-
-    function start(props, settings) {
-        connect();
-        if (props.name === props.gamePage.game.settings.host) {
-            const message = {
-                event: 'firstGetQuestion',
-                roomID: props.gamePage.game.settings.host
-            }
-            send(JSON.stringify(message))
-        }
+    check() {
+        this.forceUpdate();
     }
+    componentDidMount() {
+        this.interval = setInterval(() => { this.check();}, 1500);
+    }
+    render() {
+        return (
+            <div className={classes.gameScreen}>
+                <div className={classes.gameScreenGrid}>
+                    <GameCard props={this.props} question={this.props.gamePage.game.rounds.question}/>
+                    {this.props.gamePage.game.players.length !== 0 && <UsersRanking players={this.props.gamePage.game.players}/>}
+                    <Button onClick={() => {
+                        close(this.props, this.props.gamePage.game.settings);
+                    }} className={classes.exitButton} size="small" color="primary">exit</Button>
 
-    let waitForConnection = function (callback, interval) {
-        if (socket.current.readyState === 1) {
-            callback();
-        } else {
-            setTimeout(function () {
-                waitForConnection(callback, interval);
-            }, interval);
-        }
-    };
-
-    let send = function (message) {
-        waitForConnection(function () {
-            socket.current.send(message);
-        }, 5000);
-    };
-
-    return (
-        <div className={classes.gameScreen}>
-            <div className={classes.gameScreenGrid}>
-                <GameCard question={props.gamePage.game.rounds.question}/>
-                {players.length !== 0 && <UsersRanking players={players}/>}
-                <Button onClick={() => {
-                    close(props, props.gamePage.game.settings);
-                }} className={classes.exitButton} size="small" color="primary">exit</Button>
-                {props.name === props.gamePage.game.settings.host && <Button onClick={() => {
-                    start(props, props.gamePage.game.settings);
-                    // init(props, props.gamePage.game.settings);
-                }} className={classes.startButton} size="small" color="primary">start</Button>}
-
-                {props.name !== props.gamePage.game.settings.host && <Button onClick={() => {
-                    start(props, props.gamePage.game.settings);
-                    // init(props, props.gamePage.game.settings);
-                }} className={classes.startButton} size="small" color="primary">init</Button>}
-
+                    {this.props.name === this.props.gamePage.game.settings.host && <Button onClick={() => {
+                        getFirstQuestion(this.props);
+                    }} className={classes.startButton} size="small" color="primary">start</Button>}
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
 }
 
 export default GameScreen

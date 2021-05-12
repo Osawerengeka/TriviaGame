@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import classes from "./Tables.module.css";
 import {move} from "../../../MoveToGame";
 import {Table, TableBody, TableCell, TableHead, TableRow} from "@material-ui/core";
-import {addGame} from "../../../redux/gameReducer";
+import {addGame, connectTo} from "../../../redux/gameReducer";
 import axios from "axios";
 import {getTables} from "../../../redux/tablesReducer";
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -10,6 +10,12 @@ import {CircularProgress} from '@material-ui/core';
 
 let addNewGame = (props, lobby) => {
     let action = addGame(lobby, props.name);
+    props.dispatch.dispatch(action);
+}
+
+let connect = (props, name) => {
+    let action = connectTo(name);
+    console.log(props);
     props.dispatch.dispatch(action);
 }
 
@@ -26,6 +32,7 @@ export function TableGame(props) {
     return (
         <TableRow key={lobby.name} className={classes.tableBody} onClick={() => {
             addNewGame(props, lobby);
+            connect(props,props.name);
             move("/feed/gamescreen");
         }}>
             <TableCell component="th" scope="row">{lobby.name}</TableCell>

@@ -1,10 +1,21 @@
 import {isLobbyNotEnable} from "../components/Header/Header";
 import {move} from "../MoveToGame"
-
 import axios from "axios";
 
+
+const POST_ANSWER ='POST-ANSWER';
 const ADD_GAME = 'ADD-NEW-GAME';
 const CLOSE_GAME = 'CLOSE-GAME';
+let CONNECT_TO = 'CONNECT_TO';
+const GET_Q = "GET_Q";
+
+export const postAnswer = (id, answer) => ({
+    type: 'POST-ANSWER', answer: answer, id: id
+});
+
+export const getQ = (roomId, name) => ({
+    type: 'GET_Q', roomId: roomId, name: name
+});
 
 export const addGame = (lobby, name) => ({
     type: 'ADD-NEW-GAME', lobby: lobby, name: name
@@ -14,13 +25,14 @@ export const closeGame = (lobby, name) => ({
     type: 'CLOSE-GAME', lobby: lobby, name: name
 });
 
+export const connectTo = (name) => ({
+    type: 'CONNECT_TO', name: name
+});
 
 let initialState = {
     game: {
         rounds: {
-            question: [
-                {topic: "test", question: "a ili b ili c ili d", ansVariants: ["a", "b", "c", "d"], answer: null}
-            ]
+            question: null
         },
         settings: {
             host: null,
@@ -32,13 +44,30 @@ let initialState = {
             player2: '',
             player3: '',
             player4: ''
-        }
+        },
+        players: [],
+        socket: null
     },
     isLobbyNotEnable: true
 };
 
 
 export const gameReducer = (state = initialState, action) => {
+    let waitForConnection = function (callback, interval) {
+        if (state.socket.readyState === 1) {
+            callback();
+        } else {
+            setTimeout(function () {
+                waitForConnection(callback, interval);
+            }, interval);
+        }
+    };
+
+    let send = function (message) {
+        waitForConnection(function () {
+            state.socket.send(message);
+        }, 500);
+    };
 
     switch (action.type) {
         case ADD_GAME:
@@ -50,7 +79,6 @@ export const gameReducer = (state = initialState, action) => {
             state.game.settings.maxPlayers = action.lobby.maxPlayers;
 
             let data = {settings: state.game.settings, name: action.name}
-            console.log(state.game.settings.host, action.name);
             if (state.game.settings.host !== action.name) {
                 const URLUsers = "http://localhost:3001/addPlayer";
                 axios.post(URLUsers, data)
@@ -82,8 +110,53 @@ export const gameReducer = (state = initialState, action) => {
             state.isLobbyNotEnable = true;
             return state;
 
+        case CONNECT_TO:
+            state.socket = new WebSocket('ws://localhost:5000')
+            state.socket.onopen = () => {
+                const message = {
+                    event: 'connection',
+                    name: action.name,
+                    host: state.game.settings.host
+                }
+                send(JSON.stringify(message))
+            }
+            state.socket.onmessage = (event) => {
+                const message = JSON.parse(event.data)
+                if (message.ev === 'getPlayers') {
+                    console.log(message);
+                    state.game.players = message.items;
+                    console.log(message.items);
+                } else if (message.ev === "firstGetQuestion") {
+                    state.game.rounds.question = message.items;
+                }
+            }
+            state.socket.onclose = () => {
+                console.log('Socket закрыт')
+            }
+            state.socket.onerror = () => {
+                console.log('Socket произошла ошибка')
+            }
+            break;
+        case GET_Q:
+            if (action.name === action.roomId) {
 
-
+                const message = {
+                    event: 'firstGetQuestion',
+                    roomID: action.roomId
+                }
+                console.log("GETQ");
+                send(JSON.stringify(message))
+            }
+            break;
+        case POST_ANSWER:
+            const message = {
+                event: 'postAnswer',
+                id: action.id,
+                answer: action.answer,
+                roomID: action.roomId
+            }
+            send(JSON.stringify(message))
+            break;
     }
     return state;
 }

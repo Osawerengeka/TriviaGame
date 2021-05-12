@@ -18,27 +18,23 @@ const useStyles = makeStyles((theme) => ({
 
 let ListofPlayers = (players) => {
 
-    console.log(players);
-    console.log(players.players);
     const defclasses = useStyles();
-
     return (
         <List className={defclasses.root + classes.usersRanking}>
             {players.players.map(el =>
-            <ListItem>
-                <ListItemAvatar>
-                    <Avatar>
-                        <ImageIcon/>
-                    </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={el.name} secondary={el.points}/>
-            </ListItem>)}
+                <ListItem>
+                    <ListItemAvatar>
+                        <Avatar>
+                            <ImageIcon/>
+                        </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText primary={el.name} secondary={el.points}/>
+                </ListItem>)}
         </List>)
 
 }
 
 export function UsersRanking(props) {
-
-     return <ListofPlayers players={props.players}/>;
+    return <ListofPlayers players={props.players}/>;
     return null;
 }
